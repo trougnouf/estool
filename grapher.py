@@ -11,7 +11,7 @@ else:
 
 filelist = os.listdir(logdir)
 
-ver = re.findall("[0-9]+\.[0-9]+",filelist[0])[0]
+#ver = re.findall("[0-9]+\.[0-9]+",filelist[0])[0]
 
 def get_models_time_bscore(logdir):
 
