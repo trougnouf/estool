@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 def compute_ranks(x):
   """
@@ -184,7 +185,6 @@ class SimpleGA:
 
     solutions = np.array(solutions)
     self.solutions = solutions
-
     return solutions
 
   def tell(self, reward_table_result):
@@ -523,3 +523,25 @@ class PEPG:
 
   def result(self): # return best params so far, along with historically best reward, curr reward, sigma
     return (self.best_mu, self.best_reward, self.curr_best_reward, self.sigma)
+
+class RandomES:
+  def __init__(self, num_worker, num_worker_trial, num_params, popsize=256):
+    self.num_worker = num_worker
+    self.num_worker_trial = num_worker_trial
+    self.popsize = popsize
+    self.num_params = num_params
+  def ask(self): # should be size32
+    res = []
+    for i in range(0,self.num_worker*self.num_worker_trial):
+      res.append(np.random.rand(self.num_params)*2-1)
+    return np.array(res)
+  def tell(self, whatever):
+    return
+  def result(self):
+    return (np.random.rand(self.num_params)*2-1, random.randint(-1000,1000), random.randint(-1000,1000), random.random())
+  def rms_stdev(self):
+    return random.random()
+  def current_param(self):
+    return np.random.rand(self.num_params)*2-1
+  def set_mu(self):
+    return

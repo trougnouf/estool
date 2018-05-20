@@ -20,6 +20,7 @@ else:
 	(xaxis_name, xaxis_i) = ('time (s)', 1)
 
 filelist = os.listdir(logdir)
+filelist.sort()
 
 #ver = re.findall("[0-9]+\.[0-9]+",filelist[0])[0]
 
@@ -36,6 +37,7 @@ def get_and_plot_models_xaxis_bscore(logdir):
         if "hist" not in fn:
             continue
         (model,algo)=[fn.split(".")[i] for i in (0,1)]
+        print((model,algo))
         if model not in models:
             print(model)
             models[model] = {}

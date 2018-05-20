@@ -20,7 +20,7 @@ import subprocess
 import sys
 import config
 from model import make_model, simulate
-from es import CMAES, SimpleGA, OpenES, PEPG
+from es import CMAES, SimpleGA, OpenES, PEPG, RandomES
 import argparse
 import time
 
@@ -107,6 +107,9 @@ def initialize_settings(sigma_init=0.1, sigma_decay=0.9999):
       weight_decay=0.005,
       popsize=population)
     es = pepg
+  elif optimizer == 'rand':
+    rand_es = RandomES(num_params=num_params, num_worker = num_worker, num_worker_trial = num_worker_trial, popsize=population)
+    es = rand_es
   else:
     oes = OpenES(num_params,
       sigma_init=sigma_init,
@@ -302,13 +305,11 @@ def master():
     t += 1
 
     solutions = es.ask()
-
     if antithetic:
       seeds = seeder.next_batch(int(es.popsize/2))
       seeds = seeds+seeds
     else:
       seeds = seeder.next_batch(es.popsize)
-
     packet_list = encode_solution_packets(seeds, solutions, max_len=max_len)
 
     send_packets_to_slaves(packet_list)
@@ -324,6 +325,7 @@ def master():
     es.tell(reward_list)
 
     es_solution = es.result()
+    
     model_params = es_solution[0] # best historical solution
     reward = es_solution[1] # best reward
     curr_reward = es_solution[2] # best of the current batch
