@@ -305,27 +305,26 @@ def master():
     t += 1
 
     solutions = es.ask()
+
     if antithetic:
       seeds = seeder.next_batch(int(es.popsize/2))
       seeds = seeds+seeds
     else:
       seeds = seeder.next_batch(es.popsize)
+
     packet_list = encode_solution_packets(seeds, solutions, max_len=max_len)
 
     send_packets_to_slaves(packet_list)
     reward_list_total = receive_packets_from_slaves()
 
-    reward_list = reward_list_total[:, 0] # get rewards
-
+    reward_list = reward_list_total[:,0]/(reward_list_total[:,1]+1) # get rewards
     mean_time_step = int(np.mean(reward_list_total[:, 1])*100)/100. # get average time step
     max_time_step = int(np.max(reward_list_total[:, 1])*100)/100. # get average time step
     avg_reward = int(np.mean(reward_list)*100)/100. # get average time step
     std_reward = int(np.std(reward_list)*100)/100. # get average time step
-
     es.tell(reward_list)
 
     es_solution = es.result()
-    
     model_params = es_solution[0] # best historical solution
     reward = es_solution[1] # best reward
     curr_reward = es_solution[2] # best of the current batch
@@ -441,3 +440,4 @@ if __name__ == "__main__":
   args = parser.parse_args()
   if "parent" == mpi_fork(args.num_worker+1): os.exit()
   main(args)
+
