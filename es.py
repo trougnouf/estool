@@ -530,18 +530,18 @@ class RandomES:
     self.num_worker_trial = num_worker_trial
     self.popsize = popsize
     self.num_params = num_params
-  def ask(self): # should be size32
-    res = []
-    for i in range(0,self.num_worker*self.num_worker_trial):
-      res.append(np.random.rand(self.num_params)*2-1)
-    return np.array(res)
+    self.best = np.random.rand(self.num_params)*2-1
+  def ask(self):
+    return np.random.rand(self.num_worker*self.num_worker_trial, self.num_params)*2-1
   def tell(self, whatever):
-    return
+    self.best = whatever
   def result(self):
     return (np.random.rand(self.num_params)*2-1, random.randint(-1000,1000), random.randint(-1000,1000), random.random())
   def rms_stdev(self):
-    return random.random()
+    return 0
+    #return random.random()
   def current_param(self):
-    return np.random.rand(self.num_params)*2-1
+    return self.best
+    #return np.random.rand(self.num_params)*2-1
   def set_mu(self):
-    return
+    pass
