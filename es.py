@@ -525,23 +525,27 @@ class PEPG:
     return (self.best_mu, self.best_reward, self.curr_best_reward, self.sigma)
 
 class RandomES:
-  def __init__(self, num_worker, num_worker_trial, num_params, popsize=256):
+  '''Randomized baseline strategy'''
+  def __init__(self, num_params, num_worker, num_worker_trial):
+    self.num_params = num_params
     self.num_worker = num_worker
     self.num_worker_trial = num_worker_trial
-    self.popsize = popsize
-    self.num_params = num_params
     self.best = np.random.rand(self.num_params)*2-1
+
   def ask(self):
     return np.random.rand(self.num_worker*self.num_worker_trial, self.num_params)*2-1
-  def tell(self, whatever):
-    self.best = whatever
+
+  def tell(self, bs):
+    self.best = bs
+
   def result(self):
     return (np.random.rand(self.num_params)*2-1, random.randint(-1000,1000), random.randint(-1000,1000), random.random())
+
   def rms_stdev(self):
     return 0
-    #return random.random()
+
   def current_param(self):
     return self.best
-    #return np.random.rand(self.num_params)*2-1
+
   def set_mu(self):
     pass
