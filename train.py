@@ -20,7 +20,7 @@ import subprocess
 import sys
 import config
 from model import make_model, simulate
-from es import CMAES, SimpleGA, OpenES, PEPG
+from es import CMAES, SimpleGA, OpenES, PEPG, RandomES
 import argparse
 import time
 
@@ -107,6 +107,9 @@ def initialize_settings(sigma_init=0.1, sigma_decay=0.9999):
       weight_decay=0.005,
       popsize=population)
     es = pepg
+  elif optimizer == 'rand':
+    rand_es = RandomES(num_params=num_params, num_worker = num_worker, num_worker_trial = num_worker_trial, popsize=population)
+    es = rand_es
   else:
     oes = OpenES(num_params,
       sigma_init=sigma_init,
