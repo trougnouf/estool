@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 def compute_ranks(x):
   """
@@ -539,7 +538,7 @@ class RandomES:
     self.best = bs
 
   def result(self):
-    return (np.random.rand(self.num_params)*2-1, random.randint(-1000,1000), random.randint(-1000,1000), random.random())
+    return (np.random.rand(self.num_params)*2-1, np.random.randint(-1000,1000), np.random.randint(-1000,1000), np.random.random())
 
   def rms_stdev(self):
     return 0
