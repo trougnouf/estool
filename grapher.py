@@ -19,19 +19,27 @@ if '--x-axis' in sys.argv:
 else:
 	(xaxis_name, xaxis_i) = ('time (s)', 1)
 
+if '--y-axis' in sys.argv:
+	(yaxis_name, yaxis_i) = {
+		'best': ('best score', 4),
+		'avg': ('avg score', 2)
+	}[sys.argv[sys.argv.index('--y-axis')+1]]
+else:
+	(yaxis_name, yaxis_i) = ('best score', 4)
+
 filelist = os.listdir(logdir)
 filelist.sort()
 
 #ver = re.findall("[0-9]+\.[0-9]+",filelist[0])[0]
 
-def get_and_plot_models_xaxis_bscore(logdir):
+def get_and_plot_models_xaxis_score(logdir):
     models={}
-    def get_xaxis_bscore(fn):
-        xaxis_bscore={}
+    def get_xaxis_score(fn):
+        xaxis_score={}
         with open(logdir+"/"+fn) as f:
             for line in json.load(f):
-                xaxis_bscore[line[xaxis_i]] = line[4]
-        return xaxis_bscore
+                xaxis_score[line[xaxis_i]] = line[yaxis_i]
+        return xaxis_score
     fig = None
     for fn in filelist:
         if "hist" not in fn:
@@ -48,10 +56,10 @@ def get_and_plot_models_xaxis_bscore(logdir):
             fig = plt.figure()
             figstuff = fig.add_subplot(111)
             plt.xlabel(xaxis_name)
-            plt.ylabel("score")
+            plt.ylabel(yaxis_name)
             plt.title(model)
 
-        xaxis_bscore = get_xaxis_bscore(fn)
+        xaxis_score = get_xaxis_score(fn)
         try:
             color = colors.pop()
         except IndexError:
@@ -63,10 +71,10 @@ def get_and_plot_models_xaxis_bscore(logdir):
             color='0'+color
         color='#'+color
         print(algo)
-        models[model][algo] = {'fn':fn, 'algo':algo, 'perf':xaxis_bscore, 'color':color}
-        figstuff.scatter(xaxis_bscore.keys(), xaxis_bscore.values(), c=color, label=algo)
+        models[model][algo] = {'fn':fn, 'algo':algo, 'perf':xaxis_score, 'color':color}
+        figstuff.scatter(xaxis_score.keys(), xaxis_score.values(), c=color, label=algo)
     plt.legend()
     plt.show()
     return models
-models = get_and_plot_models_xaxis_bscore(logdir)
+models = get_and_plot_models_xaxis_score(logdir)
 
